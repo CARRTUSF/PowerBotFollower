@@ -1,2 +1,4 @@
 # NetBeans Project
 /nbproject/*
+/build/
+/dist/

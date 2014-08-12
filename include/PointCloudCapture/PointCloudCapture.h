@@ -44,7 +44,7 @@
 #include <opencv/highgui.h>
 #include <string>
 
-#include "InputData.h"
+#include "PointCloudCapture/InputData.h"
 
 /**
  * \brief Captures XYZRGB point clouds from the Kinect

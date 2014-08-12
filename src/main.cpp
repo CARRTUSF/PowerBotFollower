@@ -8,7 +8,7 @@
 #include "aruco/aruco.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "PointCloudCapture.h"
+#include "PointCloudCapture/PointCloudCapture.h"
 #include "pcl/visualization/pcl_visualizer.h"
 
 using namespace std;

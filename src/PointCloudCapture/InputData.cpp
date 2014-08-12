@@ -35,7 +35,7 @@
  *      \author	Indika Pathirage
  */
 
-#include "InputData.h"
+#include "PointCloudCapture/InputData.h"
 
 InputData::InputData(void):
 srcCloud(new pcl::PointCloud<pcl::PointXYZRGBA>)

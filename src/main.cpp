@@ -27,7 +27,6 @@ int main(int argc, char** argv) {
     cam->getFrame(src);
 
     do{
-        
         cout << "capturing..." << endl;
         cam->getFrame(src);
         cout << "detecting..." << endl;

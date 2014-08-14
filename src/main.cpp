@@ -27,7 +27,10 @@ int main(int argc, char** argv) {
     cam->getFrame(src);
 
     do{
+        
+        cout << "capturing..." << endl;
         cam->getFrame(src);
+        cout << "detecting..." << endl;
         MDetector.detect(src.srcImg, markers);
         for (unsigned int i=0;i < markers.size();i++) {
             //cout << markers[i] << endl;
@@ -38,11 +41,11 @@ int main(int argc, char** argv) {
                 int centerY = markerCenter.y;
                 pcl::PointXYZRGBA pos = src.srcCloud->points[markerCenter.y 
                         * src.srcCloud->width + markerCenter.x];
-                cout << "Four Corners: \n" << markers[i][0] << "\n"
-                                           << markers[i][1] << "\n"
-                                           << markers[i][2] << "\n"
-                                           << markers[i][3] << "\n";
-                cout << "Image Center: {" << markerCenter.x << "," << markerCenter.y << "}\n";
+//                cout << "Four Corners: \n" << markers[i][0] << "\n"
+//                                           << markers[i][1] << "\n"
+//                                           << markers[i][2] << "\n"
+//                                           << markers[i][3] << "\n";
+//                cout << "Image Center: {" << markerCenter.x << "," << markerCenter.y << "}\n";
                 cout << "{X,Y,Z} = {" << pos.x << "," << pos.y << "," << pos.z << "}\n";
             }
         }

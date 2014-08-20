@@ -19,10 +19,11 @@ public:
 public:
     bool connect();
     bool getRunningWithLock();
+    void requestUpdate();
+    void transformPoints(float &outX, float &outY);
 
 private:
     void handleOutputNumbers(ArNetPacket *packet);
-    void transformPoints(int &outX, int &outY);
 
 private:
     ArClientBase pbClient;

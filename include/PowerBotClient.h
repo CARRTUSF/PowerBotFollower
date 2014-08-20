@@ -22,6 +22,7 @@ public:
 
 private:
     void handleOutputNumbers(ArNetPacket *packet);
+    void transformPoints(int &outX, int &outY);
 
 private:
     ArClientBase pbClient;

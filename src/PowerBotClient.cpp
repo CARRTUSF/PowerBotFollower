@@ -7,6 +7,9 @@
 
 #include "PowerBotClient.h"
 #include <iostream>
+#include <tgmath.h>
+
+#define PI 3.14159265
 
 PowerBotClient::PowerBotClient() :
     pbOutputNumbersCB(this, &PowerBotClient::handleOutputNumbers)
@@ -48,4 +51,10 @@ void PowerBotClient::handleOutputNumbers(ArNetPacket *packet) {
     pbRotVel = (double)packet->bufToByte2();
     pbLatVel = (double)packet->bufToByte2();
     pbTemperature = (double)packet->bufToByte();
+}
+
+void PowerBotClient::transformPoints(double &outX, double &outY) {
+    double pbThRad = (((pbTh - 90)*PI)/180);
+    outX = (outX*cos(pbThRad) - outY*sin(pbThRad)) + pbX;
+    outY = (outY*cos(pbThRad) + outX*sin(pbThRad)) + pbY;
 }

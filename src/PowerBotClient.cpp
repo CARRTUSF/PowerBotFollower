@@ -12,9 +12,14 @@ PowerBotClient::PowerBotClient() :
     pbOutputNumbersCB(this, &PowerBotClient::handleOutputNumbers)
 {
     Aria::init();
-    lastPosX = 0.0;
-    lastPosY = 0.0;
-    lastHeading = 0.0;
+    pbVoltage = 0.0;
+    pbX = 0.0;
+    pbY = 0.0;
+    pbTh = 0.0;
+    pbVel = 0.0;
+    pbRotVel = 0.0;
+    pbLatVel = 0.0;
+    pbTemperature = 0.0;
 }
 
 PowerBotClient::~PowerBotClient() {
@@ -35,5 +40,12 @@ bool PowerBotClient::getRunningWithLock() {
 }
 
 void PowerBotClient::handleOutputNumbers(ArNetPacket *packet) {
-    
+    pbVoltage = ((double)packet->bufToByte2())/10.0;
+    pbX = (double)packet->bufToByte4();
+    pbY = (double)packet->bufToByte4();
+    pbTh = (double)packet->bufToByte2();
+    pbVel = (double)packet->bufToByte2();
+    pbRotVel = (double)packet->bufToByte2();
+    pbLatVel = (double)packet->bufToByte2();
+    pbTemperature = (double)packet->bufToByte();
 }

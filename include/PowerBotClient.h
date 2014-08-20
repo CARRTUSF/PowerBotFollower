@@ -15,21 +15,20 @@ class PowerBotClient {
 public:
     PowerBotClient();
     virtual ~PowerBotClient();
-    
+
 public:
     bool connect();
     bool getRunningWithLock();
-    
+
 private:
     void handleOutputNumbers(ArNetPacket *packet);
 
 private:
     ArClientBase pbClient;
     ArFunctor1C<PowerBotClient, ArNetPacket *> pbOutputNumbersCB;
-    
-    float lastPosX;
-    float lastPosY;
-    float lastHeading;
+
+private:
+    double pbVoltage, pbX, pbY, pbTh, pbVel, pbRotVel, pbLatVel, pbTemperature;
 };
 
 #endif	/* POWERBOTCLIENT_H */

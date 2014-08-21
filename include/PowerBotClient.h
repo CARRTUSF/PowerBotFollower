@@ -17,9 +17,11 @@ public:
     virtual ~PowerBotClient();
 
 public:
-    bool connect();
-    bool getRunningWithLock();
-    void requestUpdate();
+    ///Connects to the PowerBot
+    bool connect(void);
+    bool getRunningWithLock(void);
+    void moveTo(float posX, float posY);
+    void requestUpdate(void);
     void transformPoints(float &outX, float &outY);
 
 private:

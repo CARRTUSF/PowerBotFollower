@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         for (unsigned int i=0;i < markers.size();i++) {
             //cout << markers[i] << endl;
             markers[i].draw(src.srcImg, cv::Scalar(0,0,255), 2);
-            if(markers[i].id == 213) {
+            if(markers[i].id == 1023) {
                 markerCenter = markers[i].getCenter();
                 int centerX = markerCenter.x;
                 int centerY = markerCenter.y;
@@ -57,12 +57,9 @@ int main(int argc, char** argv) {
                 cout << "Marker Center {X,Y,Z} = {" << pos.x << "," << pos.y << "," << pos.z << "}\n";
                 pos.x = (pos.x * (-1000));
                 pos.z = (pos.z * 1000);
-                if(pos.z >= 3000.0) {
-                    pos.z = 1000;
-                }
                 pbClient.transformPoints(pos.x, pos.z);
-                cout << "Map Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
-                //PowerBot Navigation Code will go here
+                cout << "Desired PowerBot Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
+                pbClient.moveTo(pos.x, pos.z);
             }
         }
     }
@@ -70,8 +67,4 @@ int main(int argc, char** argv) {
     cam->stopCapture();
     
     return 0;
-}
-
-void findCenter(double &outX, double &outY, double &outZ) {
-    
 }

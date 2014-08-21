@@ -53,6 +53,13 @@ void PowerBotClient::handleOutputNumbers(ArNetPacket *packet) {
     pbTemperature = (double)packet->bufToByte();
 }
 
+void PowerBotClient::moveTo(float posX, float posY) {
+    ArNetPacket pbMovePayload;
+    pbMovePayload.byte4ToBuf(posX);
+    pbMovePayload.byte4ToBuf(posY);
+    pbClient.requestOnce("gotoPose", &pbMovePayload);
+}
+
 void PowerBotClient::requestUpdate() {
     pbClient.requestOnce("updateNumbers");
 }

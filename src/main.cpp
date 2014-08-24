@@ -33,9 +33,16 @@ int main(int argc, char** argv) {
         if(!camCap.read(newFrame)) {
             //PASS
         } else {
-            
+            //MARKER DETECTOR
+            //SEND INFORMATION
+            if(cv::waitKey(50) == 27) {//wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
+                cout << "ESC Key Pressed, exiting..." << endl;
+                break; 
+            }
         }
     }
+
+    //SEND STOP
 
     return 0;
 }

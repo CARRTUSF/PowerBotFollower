@@ -32,6 +32,7 @@ bool PowerBotClient::connect() {
     if(pbClient.blockingConnect("127.0.0.1", 7272)) {
         pbClient.runAsync();
         pbClient.addHandler("updateNumbers", &pbOutputNumbersCB);
+        pbClient.request("updateNumbers", 100);
         return 1;
     } else {
         return 0;

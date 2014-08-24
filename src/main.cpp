@@ -6,12 +6,13 @@
  */
 
 #include "aruco/aruco.h"
+#include <cmath>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/common/centroid.h>
 
 #include "PointCloudCapture/PointCloudCapture.h"
-#include "PowerBotClient.h"
+//#include "PowerBotClient.h"
 
 using namespace std;
 
@@ -72,7 +73,7 @@ Eigen::Vector4f getCenter(int centerX, int centerY, int imgWidth, int imgHeight,
         }
     }
     
-    cout << "PC Size: " << tempCloud->size() << "\n";
+//    cout << "PC Size: " << tempCloud->size() << "\n";
     pcl::compute3DCentroid(*tempCloud, centroid);
     return centroid;
 }
@@ -83,20 +84,19 @@ int main(int argc, char** argv) {
     cv::Point2f markerCenter;
 
     PointCloudCapture* cam = new PointCloudCapture();
+    pcl::PointXYZ pos;
     InputData src;
     
     int imgWidth = 0;
     int imgHeight = 0;
-    
-    pcl::PointXYZRGBA pos;
 
-    PowerBotClient pbClient;
-    if(pbClient.connect()) {
-        std::cout << "Connected to PowerBot!\n";
-    } else {
-        std::cout << "Could not connect to PowerBot!\n";
-        return 0;
-    }
+//    PowerBotClient pbClient;
+//    if(pbClient.connect()) {
+//        std::cout << "Connected to PowerBot!\n";
+//    } else {
+//        std::cout << "Could not connect to PowerBot!\n";
+//        return 0;
+//    }
     
     cam->startCapture();
     cam->getFrame(src);
@@ -104,8 +104,8 @@ int main(int argc, char** argv) {
     imgWidth = src.srcImg.size().width;
     imgHeight = src.srcImg.size().height;
     
-    while(pbClient.getRunningWithLock()) {
-        pbClient.requestUpdate();
+    while(/*pbClient.getRunningWithLock()*/true) {
+//        pbClient.requestUpdate();
         cam->getFrame(src);
         MDetector.detect(src.srcImg, markers);
         for (unsigned int i=0;i < markers.size();i++) {
@@ -115,14 +115,13 @@ int main(int argc, char** argv) {
                 markerCenter = markers[i].getCenter();
 //                pcl::PointXYZRGBA pos = src.srcCloud->points[markerCenter.y 
 //                                      * src.srcCloud->width + markerCenter.x];
-                pcl::PointXYZ pos;
                 pos.getArray4fMap() = getCenter(markerCenter.x, markerCenter.y,
                                                 imgWidth, imgHeight, src.srcCloud);
                 //cout << "Four Corners: \n" << markers[i][0] << "\n"
                 //                           << markers[i][1] << "\n"
                 //                           << markers[i][2] << "\n"
                 //                           << markers[i][3] << "\n";
-                //cout << "Image Center: {" << markerCenter.x << "," << markerCenter.y << "}\n";
+                cout << "Image Center: {" << markerCenter.x << "," << markerCenter.y << "}\n";
                 cout << "Marker Center (WORLD) {X,Y,Z} = {" << pos.x << "," << pos.y << "," << pos.z << "}\n";
                 pos.x = (pos.x * (-1000));
                 pos.z = (pos.z * 1000);
@@ -130,9 +129,9 @@ int main(int argc, char** argv) {
                     std::isnan(pos.x) || std::isnan(pos.z)) {
                     //PASS
                 } else {
-                    pbClient.transformPoints(pos.x, pos.z);
-                    cout << "Desired PowerBot Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
-                    pbClient.moveTo(pos.x, pos.z);
+//                    pbClient.transformPoints(pos.x, pos.z);
+//                    cout << "Desired PowerBot Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
+//                    pbClient.moveTo(pos.x, pos.z);
                     usleep(250000);
                 }
             }

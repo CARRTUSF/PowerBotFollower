@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
             //SEND INFORMATION
             if(cv::waitKey(50) == 27) {//wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
                 cout << "ESC Key Pressed, exiting..." << endl;
-                break; 
+                break;
             }
         }
     }

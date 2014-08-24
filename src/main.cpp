@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     // The marker following action
     PowerBotMarkerChase pbMarkerChaser();
     
-    // Lock Control of the Robot?
+    // Lock The Robot Instance
     pbRobot.lock();
     
     // Add the sonar to the robot
@@ -83,12 +83,13 @@ int main(int argc, char** argv) {
     pbRobot.addAction(&pbMarkerChaser, 3);
     pbRobot.addAction(&pbStop, 1);
     
-    // Unlock Control of the Robot after the actions have been set
+    // Unlock The Robot Instance
     pbRobot.unlock();
     
     // Run the robot processing cycle until the connection is lost
     ArLog::log(ArLog::Normal, "Running. Send Marker coordinate data on UDP port 6969");
     
+    // Suspend this thread until the robot thread has finished
     pbRobot.waitForRunExit();
     
     Aria::exit(0);

@@ -9,8 +9,11 @@
 #define	POWERBOTMARKERCHASE_H
 
 #include "Aria.h"
+#include "SockStream.h"
 
-class PowerBotMarkerChase : public ArAction{
+class PowerBotMarkerChase : public ArAction
+{
+
 public:
     // The state of the chase action
     enum State {
@@ -27,17 +30,17 @@ public:
     // Return the current state of this action
     State getState(void) { return myState; }
 
-    // Height and width of pixels from frame-grabber
-    enum {
-        WIDTH = 160,
-        HEIGHT = 120
-    };
-
 protected:
     ArActionDesired myDesiredAction;
     ArTime myMarkerLastSeen;
     State myState;
     int myMaxTime;
+    
+    //Socket Stuff
+    sending_udpsocket clientSocket;
+    sockstream networkOut;
+    receiving_udpsocket serverSocket;
+    sockstream networkIn;
 };
 
 #endif	/* POWERBOTMARKERCHASE_H */

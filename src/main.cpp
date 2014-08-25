@@ -9,6 +9,18 @@
 
 using namespace std;
 
+// Callback to enable/disable the keyboard driving action
+void toggleAction(ArAction* action)
+{
+    if(action->isActive()) {
+        action->deactivate();
+        ArLog::log(ArLog::Normal, "%s action is now deactivated.", action->getName());
+    } else {
+        action->activate();
+        ArLog::log(ArLog::Normal, "%s action is now activated.", action->getName());
+    }
+}
+
 int main(int argc, char** argv) {
     Aria::init();
     ArArgumentParser parser(&argc, argv); //Argument Parser
@@ -52,6 +64,10 @@ int main(int argc, char** argv) {
         ArLog::log(ArLog::Terse, "Warning: Could not connect to configured lasers. ");
     }
     
+    // A key handler to take input from keyboard
+    ArKeyHandler keyHandler;
+    Aria::setKeyHandler(&keyHandler);
+    
     // Robot motion limiter actions (if obstacles are detected by sonar or laser)
     ArActionLimiterForwards pbSpeedLimiter("speed limiter near", 350, 800, 200);
     ArActionLimiterForwards pbSpeedLimiterFar("speed limiter far", 400, 1250, 300);
@@ -59,7 +75,19 @@ int main(int argc, char** argv) {
     ArActionConstantVelocity pbStop("stop", 0);
  
     // The marker following action
-    PowerBotMarkerChase pbMarkerChaser();
+    PowerBotMarkerChase pbMarkerChaser;
+    
+    // Keyboard Teleoperation action
+    ArActionKeydrive keydriveAction;
+    
+    // Use the "a" key to activate/deactivate keydrive mode
+    keyHandler.addKeyHandler('a', new ArGlobalFunctor1<ArAction*>(&toggleAction, &keydriveAction));
+    
+    // Let Aria know about the key handler
+    Aria::setKeyHandler(&keyHandler);
+    
+    // Add the key handler to the robot
+    pbRobot.attachKeyHandler(&keyHandler);
     
     // Lock The Robot Instance
     pbRobot.lock();
@@ -77,17 +105,21 @@ int main(int argc, char** argv) {
     pbRobot.comInt(ArCommands::SOUNDTOG, 0);
     
     // Add the actions to the robot in descending order of importance.
-    pbRobot.addAction(&pbSpeedLimiter, 6);
-    pbRobot.addAction(&pbSpeedLimiterFar, 5);
-    pbRobot.addAction(&pbBackwardsLimiter, 4);
+    pbRobot.addAction(&pbSpeedLimiter, 7);
+    pbRobot.addAction(&pbSpeedLimiterFar, 6);
+    pbRobot.addAction(&pbBackwardsLimiter, 5);
+    pbRobot.addAction(&keydriveAction, 4);
     pbRobot.addAction(&pbMarkerChaser, 3);
     pbRobot.addAction(&pbStop, 1);
     
     // Unlock The Robot Instance
     pbRobot.unlock();
     
+    // Start with keydrive action disabled. Use the 'a' key to turn it on.
+    keydriveAction.deactivate();
+    
     // Run the robot processing cycle until the connection is lost
-    ArLog::log(ArLog::Normal, "Running. Send Marker coordinate data on UDP port 6969");
+    ArLog::log(ArLog::Normal, "Running. Send Marker data on UDP port 3251, or use 'a' key to switch to keyboard driving mode.");
     
     // Suspend this thread until the robot thread has finished
     pbRobot.waitForRunExit();

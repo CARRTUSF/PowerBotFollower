@@ -12,13 +12,13 @@
 #include <pcl/common/centroid.h>
 
 #include "PointCloudCapture/PointCloudCapture.h"
-//#include "PowerBotClient.h"
+#include "PowerBotClient.h"
 
 using namespace std;
 
 Eigen::Vector4f getCenter(int centerX, int centerY, int imgWidth, int imgHeight,
                           pcl::PointCloud<pcl::PointXYZRGBA>::Ptr srcCloud) {
-    int pixelWidth = 5;
+    int pixelWidth = 10;
     int minX = 0, maxX = 0, minY = 0, maxY = 0;
     
     pcl::PointXYZRGBA tempPos;
@@ -90,13 +90,13 @@ int main(int argc, char** argv) {
     int imgWidth = 0;
     int imgHeight = 0;
 
-//    PowerBotClient pbClient;
-//    if(pbClient.connect()) {
-//        std::cout << "Connected to PowerBot!\n";
-//    } else {
-//        std::cout << "Could not connect to PowerBot!\n";
-//        return 0;
-//    }
+    PowerBotClient pbClient;
+    if(pbClient.connect()) {
+        std::cout << "Connected to PowerBot!\n";
+    } else {
+        std::cout << "Could not connect to PowerBot!\n";
+        return 0;
+    }
     
     cam->startCapture();
     cam->getFrame(src);
@@ -104,8 +104,8 @@ int main(int argc, char** argv) {
     imgWidth = src.srcImg.size().width;
     imgHeight = src.srcImg.size().height;
     
-    while(/*pbClient.getRunningWithLock()*/true) {
-//        pbClient.requestUpdate();
+    while(pbClient.getRunningWithLock()) {
+        pbClient.requestUpdate();
         cam->getFrame(src);
         MDetector.detect(src.srcImg, markers);
         for (unsigned int i=0;i < markers.size();i++) {
@@ -123,16 +123,19 @@ int main(int argc, char** argv) {
                 //                           << markers[i][3] << "\n";
                 cout << "Image Center: {" << markerCenter.x << "," << markerCenter.y << "}\n";
                 cout << "Marker Center (WORLD) {X,Y,Z} = {" << pos.x << "," << pos.y << "," << pos.z << "}\n";
+
                 pos.x = (pos.x * (-1000));
-                pos.z = (pos.z * 1000);
+                pos.z = (pos.z * 1000) - 500;
+                if(pos.z < 0) { pos.z = 0; }
+                
                 if((abs(pos.x) >= 2500) || (abs(pos.z) >= 3500) ||
                     std::isnan(pos.x) || std::isnan(pos.z)) {
                     //PASS
                 } else {
-//                    pbClient.transformPoints(pos.x, pos.z);
-//                    cout << "Desired PowerBot Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
-//                    pbClient.moveTo(pos.x, pos.z);
-                    usleep(250000);
+                    pbClient.transformPoints(pos.x, pos.z);
+                    cout << "Desired PowerBot Coordinates {X,Y} = {" << pos.x << "," << pos.z << "}\n";
+                    pbClient.moveTo(pos.x, pos.z);
+                    usleep(1500000);
                 }
             }
         }

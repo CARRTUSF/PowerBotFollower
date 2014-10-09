@@ -1,4 +1,6 @@
 # NetBeans Project
 /nbproject/*
-/build/
-/dist/
+/build/*
+/dist/*
+/.dep.inc
+/Makefile
